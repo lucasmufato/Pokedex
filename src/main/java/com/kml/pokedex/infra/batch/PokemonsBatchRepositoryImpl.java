@@ -7,23 +7,24 @@ import com.kml.pokedex.core.repositories.PokemonsBatchRepository;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class PokemonsBatchRepositoryImpl implements PokemonsBatchRepository {
+  private final Logger log = Logger.getLogger(PokemonsBatchRepositoryImpl.class.getName());
 
-
-  ObjectMapper mapper = new ObjectMapper();
-  TypeReference<List<BatchPokemon>> typeReference = new TypeReference<>() {};
-  InputStream inputStream = TypeReference.class.getResourceAsStream("/static/pokemons_data.json");
+  private final ObjectMapper mapper = new ObjectMapper();
+  private final TypeReference<List<BatchPokemon>> typeReference = new TypeReference<>() {};
+  private final InputStream inputStream = TypeReference.class.getResourceAsStream("/static/pokemons_data.json");
 
   @Override
   public List<Pokemon> getAllBatchPokemons() {
     try {
-      List<BatchPokemon> batchPokemons = mapper.readValue(inputStream,typeReference);
+      List<BatchPokemon> batchPokemons = mapper.readValue(inputStream, typeReference);
       return batchPokemons.stream().map(this::toPokemon).collect(Collectors.toList());
     } catch (IOException e){
-      System.out.println("Unable to read batch pokemons: " + e.getMessage());
-      throw new RuntimeException(e);
+      log.info("Unable to read batch pokemons: " + e.getMessage());
+      throw new BatchException("Unable to read batch pokemons",e);
     }
   }
 
@@ -31,4 +32,10 @@ public class PokemonsBatchRepositoryImpl implements PokemonsBatchRepository {
     return new Pokemon(null, batchPokemon.getName(), batchPokemon.getUrl(), batchPokemon.getDescription());
   }
 
+}
+class BatchException extends RuntimeException{
+
+  public BatchException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }

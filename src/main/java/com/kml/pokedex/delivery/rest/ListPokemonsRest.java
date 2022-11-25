@@ -5,9 +5,7 @@ import com.kml.pokedex.core.actions.ListPokemonsFilteringByName;
 import com.kml.pokedex.core.domain.Pokemon;
 import com.kml.pokedex.core.domain.exceptions.DomainExceptions;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,26 +14,29 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ListPokemonsRest {
 
-  @Autowired
-  private ListPokemons listPokemons;
+  private final ListPokemons listPokemons;
+  private final ListPokemonsFilteringByName listPokemonsFilteringByName;
 
-  @Autowired
-  private ListPokemonsFilteringByName listPokemonsFilteringByName;
+  public ListPokemonsRest(ListPokemons listPokemons,
+      ListPokemonsFilteringByName listPokemonsFilteringByName) {
+    this.listPokemons = listPokemons;
+    this.listPokemonsFilteringByName = listPokemonsFilteringByName;
+  }
 
   @GetMapping(path = "/pokedex")
-  public List<PokemonRepresentation> getAllPokemons(@RequestParam Optional<String> expand){
+  public List<PokemonRepresentation> getAllPokemons(@RequestParam(defaultValue = "")String expand){
     return mapToJson ( listPokemons.invoke(), expand);
   }
 
   @GetMapping(path = "/pokemon")
   public ResponseEntity<List<PokemonRepresentation>> getAllPokemonsFilteringBy(
-      @RequestParam Optional<String> expand,
-      @RequestParam Optional<String> query)
+      @RequestParam(defaultValue = "") String expand,
+      @RequestParam(defaultValue = "") String query)
   {
     try{
       return ResponseEntity.ok(
           mapToJson(
-              listPokemonsFilteringByName.invoke(query.orElse("")),
+              listPokemonsFilteringByName.invoke(query),
               expand
           )
       );
@@ -44,9 +45,9 @@ public class ListPokemonsRest {
     }
   }
 
-  private  List<PokemonRepresentation> mapToJson(List<Pokemon> pokemons, Optional<String> expand){
+  private  List<PokemonRepresentation> mapToJson(List<Pokemon> pokemons, String expandParameter){
     return pokemons.stream()
-        .map(pokemon -> toRepresentation(pokemon, expandQuery(expand)))
+        .map(pokemon -> toRepresentation(pokemon, "description".equalsIgnoreCase(expandParameter)))
         .collect(Collectors.toList());
   }
   private PokemonRepresentation toRepresentation(Pokemon pokemon, boolean containDescription) {
@@ -58,9 +59,5 @@ public class ListPokemonsRest {
     return representation;
   }
 
-  private static boolean expandQuery(Optional<String> expand) {
-    if( expand.isEmpty() ) return false;
-    return expand.get().equalsIgnoreCase("description");
-  }
 
 }

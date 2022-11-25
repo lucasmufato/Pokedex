@@ -3,7 +3,6 @@ package com.kml.pokedex.delivery.rest;
 import com.kml.pokedex.core.actions.GetPokemonDetails;
 import com.kml.pokedex.core.domain.PokemonDetails;
 import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,8 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class GetPokemonWithDetailsRest {
 
-  @Autowired
-  private GetPokemonDetails getPokemonDetails;
+  private final GetPokemonDetails getPokemonDetails;
+
+  public GetPokemonWithDetailsRest(GetPokemonDetails getPokemonDetails) {
+    this.getPokemonDetails = getPokemonDetails;
+  }
 
   @GetMapping("/pokemon/{id}")
   public ResponseEntity<PokemonDetailRepresentation> getPokemonWithDetailsById(@PathVariable Integer id){

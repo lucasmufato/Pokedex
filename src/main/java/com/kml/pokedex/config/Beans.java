@@ -7,7 +7,11 @@ import com.kml.pokedex.core.actions.LoadData;
 import com.kml.pokedex.core.repositories.PokemonDetailsRepository;
 import com.kml.pokedex.core.repositories.PokemonsBatchRepository;
 import com.kml.pokedex.core.repositories.PokemonsRepository;
+import com.kml.pokedex.delivery.rest.GetPokemonWithDetailsRest;
+import com.kml.pokedex.delivery.rest.ListPokemonsRest;
 import com.kml.pokedex.infra.batch.PokemonsBatchRepositoryImpl;
+import com.kml.pokedex.infra.repository.PokemonCrudRepository;
+import com.kml.pokedex.infra.repository.PokemonsRepositorySpringImpl;
 import com.kml.pokedex.infra.repository.http.PokeapiDetailsRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,11 +19,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class Beans {
 
-  @Bean
-  public PokemonsBatchRepository pokemonsBatchRepository() {
-    return new PokemonsBatchRepositoryImpl();
-  }
-
+  // CORE
   @Bean
   public LoadData loadData(PokemonsBatchRepository pokemonsBatchRepository,
       PokemonsRepository pokemonsRepository) {
@@ -37,14 +37,39 @@ public class Beans {
   }
 
   @Bean
-  public GetPokemonDetails getPokemonDetails(PokemonsRepository pokemonsRepository,
+  public GetPokemonDetails getPokemonDetails(
+      PokemonsRepository pokemonsRepository,
       PokemonDetailsRepository pokemonDetailsRepository){
     return new GetPokemonDetails(pokemonsRepository, pokemonDetailsRepository);
   }
 
+  // INFRA
+
   @Bean
   public PokemonDetailsRepository pokemonDetailsRepository(){
     return new PokeapiDetailsRepository();
+  }
+  @Bean
+  public PokemonsBatchRepository pokemonsBatchRepository() {
+    return new PokemonsBatchRepositoryImpl();
+  }
+
+  @Bean
+  public PokemonsRepository pokemonsRepository(PokemonCrudRepository pokemonCrudRepository){
+    return new PokemonsRepositorySpringImpl(pokemonCrudRepository);
+  }
+
+  // DELIVERY
+  @Bean
+  public ListPokemonsRest listPokemonsRest(
+      ListPokemonsFilteringByName listPokemonsFilteringByName,
+      ListPokemons listPokemons){
+    return new ListPokemonsRest(listPokemons, listPokemonsFilteringByName);
+  }
+
+  @Bean
+  public GetPokemonWithDetailsRest getPokemonWithDetailsRest(GetPokemonDetails getPokemonDetails){
+    return new GetPokemonWithDetailsRest(getPokemonDetails);
   }
 
 }

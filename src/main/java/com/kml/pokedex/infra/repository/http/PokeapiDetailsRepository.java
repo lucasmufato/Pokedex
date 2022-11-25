@@ -41,10 +41,7 @@ public class PokeapiDetailsRepository implements PokemonDetailsRepository {
   }
 
   private ResponseEntity<PokeapiDetails> prepareRequestTo(String url) {
-    return restTemplate.exchange(
-        url, HttpMethod.GET, null,
-        new ParameterizedTypeReference<>() {
-        });
+    return restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
   }
 
 }
