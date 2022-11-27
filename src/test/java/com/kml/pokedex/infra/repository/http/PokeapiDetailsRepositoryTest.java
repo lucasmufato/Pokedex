@@ -2,16 +2,18 @@ package com.kml.pokedex.infra.repository.http;
 
 import static com.kml.pokedex.PokemonsFactory.pikachu;
 
-import com.kml.pokedex.core.domain.Pokemon;
 import com.kml.pokedex.core.domain.Details;
+import com.kml.pokedex.core.domain.Pokemon;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.client.RestTemplate;
 
 class PokeapiDetailsRepositoryTest {
 
-  private final PokeapiDetailsRepository pokeapiRepo = new PokeapiDetailsRepository();
+  private final PokeapiDetailsRepository pokeapiRepo = new PokeapiDetailsRepository(
+      new RestTemplate());
 
   @Test
   void pokeapiContractTest() {

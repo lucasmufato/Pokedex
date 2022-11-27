@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 public class PokemonsBatchRepositoryImpl implements PokemonsBatchRepository {
   private final Logger log = Logger.getLogger(PokemonsBatchRepositoryImpl.class.getName());
@@ -21,7 +20,7 @@ public class PokemonsBatchRepositoryImpl implements PokemonsBatchRepository {
   public List<Pokemon> getAllBatchPokemons() {
     try {
       List<BatchPokemon> batchPokemons = mapper.readValue(inputStream, typeReference);
-      return batchPokemons.stream().map(this::toPokemon).collect(Collectors.toList());
+      return batchPokemons.stream().map(this::toPokemon).toList();
     } catch (IOException e){
       log.info("Unable to read batch pokemons: " + e.getMessage());
       throw new BatchException("Unable to read batch pokemons",e);

@@ -5,7 +5,6 @@ import com.kml.pokedex.core.actions.ListPokemonsFilteringByName;
 import com.kml.pokedex.core.domain.Pokemon;
 import com.kml.pokedex.core.domain.exceptions.DomainExceptions;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,38 +23,37 @@ public class ListPokemonsRest {
   }
 
   @GetMapping(path = "/pokedex")
-  public List<PokemonRepresentation> getAllPokemons(@RequestParam(defaultValue = "")String expand){
-    return mapToJson ( listPokemons.invoke(), expand);
+  public List<PokemonRepresentation> getAllPokemons(
+      @RequestParam(defaultValue = "") String expand) {
+    return mapToJson(listPokemons.invoke(), expand);
   }
 
   @GetMapping(path = "/pokemon")
   public ResponseEntity<List<PokemonRepresentation>> getAllPokemonsFilteringBy(
       @RequestParam(defaultValue = "") String expand,
-      @RequestParam(defaultValue = "") String query)
-  {
-    try{
+      @RequestParam(defaultValue = "") String query) {
+    try {
       return ResponseEntity.ok(
-          mapToJson(
-              listPokemonsFilteringByName.invoke(query),
-              expand
-          )
+          mapToJson(listPokemonsFilteringByName.invoke(query), expand)
       );
-    }catch (DomainExceptions de){
+    } catch (DomainExceptions de) {
       return ResponseEntity.notFound().build();
     }
   }
 
-  private  List<PokemonRepresentation> mapToJson(List<Pokemon> pokemons, String expandParameter){
+  private List<PokemonRepresentation> mapToJson(List<Pokemon> pokemons, String expandParameter) {
     return pokemons.stream()
         .map(pokemon -> toRepresentation(pokemon, "description".equalsIgnoreCase(expandParameter)))
-        .collect(Collectors.toList());
+        .toList();
   }
+
   private PokemonRepresentation toRepresentation(Pokemon pokemon, boolean containDescription) {
     PokemonRepresentation representation;
-    if (containDescription)
+    if (containDescription) {
       representation = new PokemonRepresentation(pokemon.id(), pokemon.name(), pokemon.description());
-    else
+    } else {
       representation = new PokemonRepresentation(pokemon.id(), pokemon.name(), null);
+    }
     return representation;
   }
 

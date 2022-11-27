@@ -15,6 +15,7 @@ import com.kml.pokedex.infra.repository.PokemonsRepositorySpringImpl;
 import com.kml.pokedex.infra.repository.http.PokeapiDetailsRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class Beans {
@@ -46,8 +47,12 @@ public class Beans {
   // INFRA
 
   @Bean
-  public PokemonDetailsRepository pokemonDetailsRepository(){
-    return new PokeapiDetailsRepository();
+  public RestTemplate restTemplate(){
+    return new RestTemplate();
+  }
+  @Bean
+  public PokemonDetailsRepository pokemonDetailsRepository(RestTemplate restTemplate){
+    return new PokeapiDetailsRepository(restTemplate);
   }
   @Bean
   public PokemonsBatchRepository pokemonsBatchRepository() {

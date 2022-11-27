@@ -5,14 +5,18 @@ import com.kml.pokedex.core.domain.Pokemon;
 import com.kml.pokedex.core.repositories.PokemonDetailsRepository;
 import java.util.Optional;
 import java.util.logging.Logger;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 public class PokeapiDetailsRepository implements PokemonDetailsRepository {
   private final Logger Log = Logger.getLogger(PokeapiDetailsRepository.class.getName());
-  private final RestTemplate restTemplate = new RestTemplate();
+  private final RestTemplate restTemplate;
+
+  public PokeapiDetailsRepository(RestTemplate template) {
+    this.restTemplate = template;
+  }
+
   @Override
   public Optional<Details> fetchDetailsFor(Pokemon pokemon) {
     try{
@@ -41,7 +45,7 @@ public class PokeapiDetailsRepository implements PokemonDetailsRepository {
   }
 
   private ResponseEntity<PokeapiDetails> prepareRequestTo(String url) {
-    return restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
+    return restTemplate.exchange(url, HttpMethod.GET, null, PokeapiDetails.class);
   }
 
 }

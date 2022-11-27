@@ -30,10 +30,10 @@ public class GetPokemonWithDetailsRest {
     return new PokemonDetailRepresentation(pd.getId(),
         pd.getName(),
         pd.getDescription(),
-        pd.getHeight().get(),
-        pd.getWeight().get(),
-        pd.getBaseExperience().get(),
-        pd.getAbilities().get()
+        pd.getHeight().orElse(null),
+        pd.getWeight().orElse(null),
+        pd.getBaseExperience().orElse(null),
+        pd.getAbilities().orElse(null)
     );
   }
 
