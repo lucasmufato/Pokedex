@@ -10,15 +10,14 @@ import com.kml.pokedex.core.repositories.PokemonsRepository;
 import com.kml.pokedex.delivery.rest.GetPokemonWithDetailsRest;
 import com.kml.pokedex.delivery.rest.ListPokemonsRest;
 import com.kml.pokedex.infra.batch.PokemonsBatchRepositoryImpl;
-import com.kml.pokedex.infra.repository.PokemonCrudRepository;
-import com.kml.pokedex.infra.repository.PokemonsRepositorySpringImpl;
 import com.kml.pokedex.infra.repository.http.PokeapiDetailsRepository;
+import com.kml.pokedex.infra.repository.jdbc.JdbcCrudRepository;
+import com.kml.pokedex.infra.repository.jdbc.JdbcPokemonsRepositoryImpl;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
-@Configuration
-public class Beans {
+@org.springframework.context.annotation.Configuration
+public class Configuration {
 
   // CORE
   @Bean
@@ -60,8 +59,8 @@ public class Beans {
   }
 
   @Bean
-  public PokemonsRepository pokemonsRepository(PokemonCrudRepository pokemonCrudRepository){
-    return new PokemonsRepositorySpringImpl(pokemonCrudRepository);
+  public PokemonsRepository pokemonsRepository(JdbcCrudRepository pokemonCrudRepository){
+    return new JdbcPokemonsRepositoryImpl(pokemonCrudRepository);
   }
 
   // DELIVERY

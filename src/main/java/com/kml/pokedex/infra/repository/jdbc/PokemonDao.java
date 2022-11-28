@@ -1,16 +1,13 @@
-package com.kml.pokedex.infra.repository;
+package com.kml.pokedex.infra.repository.jdbc;
 
 import com.kml.pokedex.core.domain.Pokemon;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 
-@Entity
+@Table("POKEMON")
 public class PokemonDao {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE)
   private Integer id;
   private String name;
   private String url;

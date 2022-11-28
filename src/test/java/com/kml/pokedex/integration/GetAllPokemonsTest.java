@@ -6,16 +6,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.kml.pokedex.infra.repository.PokemonCrudRepository;
-import com.kml.pokedex.infra.repository.PokemonDao;
 import com.kml.pokedex.infra.repository.http.AbilityDescription;
 import com.kml.pokedex.infra.repository.http.PokeapiAbilities;
 import com.kml.pokedex.infra.repository.http.PokeapiDetails;
+import com.kml.pokedex.infra.repository.jdbc.JdbcCrudRepository;
+import com.kml.pokedex.infra.repository.jdbc.PokemonDao;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -27,13 +28,14 @@ import org.springframework.web.client.RestTemplate;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureTestDatabase
 public class GetAllPokemonsTest {
 
   @Autowired
   private MockMvc mockMvc;
 
   @MockBean
-  private PokemonCrudRepository pokemonCrudRepository;
+  private JdbcCrudRepository pokemonCrudRepository;
   @MockBean
   private RestTemplate restTemplate;
 
